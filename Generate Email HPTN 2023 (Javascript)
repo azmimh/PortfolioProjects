@@ -1,0 +1,58 @@
+Created an appscripst to send email invitaion for Hari Profession Teknikal Negara 2023
+
+function sendEmails()  {
+  
+  var ss = SpreadsheetApp.openById("1TRO9R5whzP0Go9iACK6nejVzG7h-6eDIeFzF8dNC9kU").getSheetByName("Sheet1");
+  var Avals = ss.getRange("A1:A").getValues();
+  var lr = Avals.filter(String).length;
+  //var lr = ss.getLastRow();
+  var webinarTitle =ss.getRange(2,5).getValue();
+  var webinarTarikh =ss.getRange(3,5).getValue();
+  var webinarMasa =ss.getRange(4,5).getValue();
+  var webinarLink =ss.getRange(5,5).getValue();
+  var slideLink =ss.getRange(6,5).getValue();
+
+
+  var templateText = SpreadsheetApp.openById("1TRO9R5whzP0Go9iACK6nejVzG7h-6eDIeFzF8dNC9kU").getSheetByName("Sheet2").getRange(1,1).getValue();
+  var emailText = templateText.replace("{webinarTitle}",webinarTitle).replace("{tarikh}",webinarTarikh).replace("{masa}",webinarMasa).replace("{webinarLink}",webinarLink).replace("{slideLink}",slideLink);
+   
+  var quotaLeft = MailApp.getRemainingDailyQuota();
+ 
+  if((lr-1)>quotaLeft){
+    
+    Logger.log("Baki quota emel adalah " + quotaLeft + " melebihi emel yang perlu dihantar sebanyak "+ (lr-1) + ". Oleh itu, emel tidak akan dihantar");
+
+
+  } else{
+
+
+  
+
+  for (var i = 2; i<=lr;i++){
+
+
+    var currentEmail =  ss.getRange(i,1).getValue();
+    var currentClassTitle =ss.getRange(i,2).getValue();
+    
+
+    var messageBody = emailText;
+
+    
+
+
+    MailApp.sendEmail(currentEmail, webinarTitle, messageBody);
+
+    ss.getRange(i,2).setValue("Email sent")
+    //MailAppsendEmail({
+    //to: currentEmail,
+    //subject: webinarTitle,
+    //htmlBody: htmlBody,
+  
+    //});
+
+
+  
+  }
+  } //close else statement
+
+}
